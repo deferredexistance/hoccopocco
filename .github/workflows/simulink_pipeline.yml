@@ -2,7 +2,9 @@ name:
   simulink_pipeline
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - master
 
 permissions:
   checks:
