@@ -57,7 +57,7 @@
     "GeneratorVersion": 2,
     "EnableOpenTelemetry": false,
     "SupportPackageRoot": "C:\\\\ProgramData\\\\MATLAB\\\\SupportPackages\\\\R2025b",
-    "RelativeProjectPath": "",
+    "RelativeProjectPath": "/FC/",
     "RemoteBuildCacheName": "${{ github.workflow }}",
     "ArtifactServiceMode": "network",
     "NetworkStoragePath": "/artifactManagement/cacheStorage",
