@@ -1,305 +1,51 @@
-name:
-  simulink_pipeline
-
+name: Reusable Workflow - Generic Job
 on:
-  push:
-    branches:
-      - master
-
-permissions:
-  checks:
-    write
-
-  contents:
-    read
-
-
-env:
-  PATH_TO_MATLAB: "C:\\Program Files\\MATLAB\\R2025b\\bin"
-    
-
-
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      job-name:
+        required: true
+        type: string
 jobs:
-  Restore_Cache:
-    runs-on:
-      self-hosted
-
+  Generic-Job:
+    name: Generic Job
+    runs-on: 'self-hosted'
+    env:
+      MW_SUPPORT_PACKAGE_ROOT: 'C:\\ProgramData\\MATLAB\\SupportPackages\\R2025b' 
+      MW_RELATIVE_PROJECT_PATH: '' 
+      MW_REMOTE_BUILD_CACHE_NAME: ${{ github.workflow }}  
+      MW_PIPELINE_GEN_DIRECTORY: 'derived\pipeline' 
+      _MW_PIPELINE_WORKSPACE_PATH_KEY: GITHUB_WORKSPACE
+      _MW_PIPELINE_WORKSPACE_TEMP_PATH_KEY: RUNNER_TEMP
+      MW_PIPELINE_UTIL_PATH: 'C:\\ProgramData\\MATLAB\\SupportPackages\\R2025b/toolbox/padv/pipeline_generator/ci'
+      ARTIFACTORY_API_TOKEN: ${{ secrets.ARTIFACTORY_API_TOKEN_SECRET }}
+      S3_AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_AWS_SECRET_ACCESS_KEY_SECRET }}
+      AZ_CONNECTION_STRING: ${{ secrets.AZ_CONNECTION_STRING_SECRET }}
+      MLM_LICENSE_TOKEN: ${{ secrets.MLM_LICENSE_TOKEN_SECRET }}
     steps:
-      - name:
-          Checkout Repository
-
-        uses:
-          actions/checkout@v4
-
-      - name:
-          Restore Cache
-
-        uses:
-          actions/cache@v4
-
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          key:
-            padv_artifacts-${{ github.run_id }}-${{ github.run_attempt }}
-
-          restore-keys:
-            padv_artifacts-cache
-
-          path:
-            |
-            Code
-            derived/artifacts.dmr
-
-
-      - name:
-          Upload Artifacts
-
-        if:
-          ${{ !cancelled() }}
-
-        uses:
-          actions/upload-artifact@v4
-
+          fetch-depth: 0
+      - name: Download workflow generated files
+        uses: actions/download-artifact@v4
         with:
-          name:
-            Restore_Cache_padv_artifacts
-
-          path:
-            |
-            derived/artifacts.dmr
-            Code
-
-          retention-days:
-            30
-
-
-
-
-  Runprocess:
-    if:
-      ${{ !cancelled() }}
-
-    needs:
-      Restore_Cache
-
-    runs-on:
-      self-hosted
-
-    steps:
-      - name:
-          Checkout Repository
-
-        uses:
-          actions/checkout@v4
-
-      - name:
-          Download Artifacts
-
-        uses:
-          actions/download-artifact@v4
-
+          name: workflow_generated_files
+          path: ${{env.MW_RELATIVE_PROJECT_PATH}}${{env.MW_PIPELINE_GEN_DIRECTORY}}
+      - name: Load environment variables
+        run: "python3 ${{ env.MW_PIPELINE_UTIL_PATH }}/py/prepare.py --clean_temp_gen_area --jobname \"${{ inputs.job-name }}\" --pipeline_prepare --platform github" 
+      - name: Download Artifacts
+        run: "python3 ${{ env.MW_PIPELINE_UTIL_PATH }}/py/job_download.py --jobname \"${{ inputs.job-name }}\""  
+      - name: Execute Job Tasks using MATLAB plugin
+        uses: matlab-actions/run-command@v2
         with:
-          name:
-            Restore_Cache_padv_artifacts
-
-
-      - name:
-          Setup MATLAB
-
-        run:
-          echo "$PATH_TO_MATLAB" >> $GITHUB_PATH
-
-      - name:
-          Launch MATLAB
-
-        run:
-          >
-          matlab 
-          -nodesktop 
-          -logfile output.log 
-          -batch "openProject(pwd);runprocess(Process = 'CIPipeline', Force = false, ExitInBatchMode = true, RerunFailedTasks = false, RerunErroredTasks = false, GenerateJUnitForProcess = false);" 
-
-      - name:
-          Upload Artifacts
-
-        if:
-          ${{ !cancelled() }}
-
-        uses:
-          actions/upload-artifact@v4
-
+          command: "addpath('${{ env._MW_PIPELINE_TEMP_GEN_PATH }}');matlab_job_commands" 
+      - name: Upload Job Artifacts
+        run: "python3 ${{ env.MW_PIPELINE_UTIL_PATH }}/py/job_delta_upload.py --jobname \"${{ inputs.job-name }}\" --job_status \"${{ job.status }}\" --skip_compression" 
+        if: always() && !cancelled()
+      - name: Upload Pipeline Artifacts
+        if: ${{ always() && !cancelled() && env._MW_PIPELINE_JOB_IS_COLLECTING_ARTIFACTS == 'true' }}
+        uses: actions/upload-artifact@v4
         with:
-          name:
-            Runprocess_padv_artifacts
-
-          path:
-            |
-            derived/artifacts.dmr
-            Code
-
-          retention-days:
-            30
-
-
-
-
-  Generate_PADV_Report:
-    if:
-      ${{ !cancelled() }}
-
-    needs:
-      Runprocess
-
-    runs-on:
-      self-hosted
-
-    steps:
-      - name:
-          Checkout Repository
-
-        uses:
-          actions/checkout@v4
-
-      - name:
-          Download Artifacts
-
-        uses:
-          actions/download-artifact@v4
-
-        with:
-          name:
-            Restore_Cache_padv_artifacts
-
-
-      - name:
-          Download Artifacts
-
-        uses:
-          actions/download-artifact@v4
-
-        with:
-          name:
-            Runprocess_padv_artifacts
-
-
-      - name:
-          Setup MATLAB
-
-        run:
-          echo "$PATH_TO_MATLAB" >> $GITHUB_PATH
-
-      - name:
-          Generate PADV Report
-
-        run:
-          >
-          matlab 
-          -nodesktop 
-          -logfile output.log 
-          -batch "openProject(pwd);
-          rptObj=padv.ProcessAdvisorReportGenerator(Process = 'CIPipeline', Format='pdf', OutputPath=fullfile(currentProject().RootFolder,'ProcessAdvisorReport'));
-          rptObj.generateReport();" 
-
-      - name:
-          Upload Artifacts
-
-        if:
-          ${{ !cancelled() }}
-
-        uses:
-          actions/upload-artifact@v4
-
-        with:
-          name:
-            Generate_PADV_Report_padv_artifacts
-
-          path:
-            |
-            derived/artifacts.dmr
-            ProcessAdvisorReport.pdf
-
-          retention-days:
-            30
-
-
-
-
-  Collect_Artifacts:
-    if:
-      ${{ !cancelled() }}
-
-    needs:
-      Generate_PADV_Report
-
-    runs-on:
-      self-hosted
-
-    steps:
-      - name:
-          Download Artifacts
-
-        uses:
-          actions/download-artifact@v4
-
-        with:
-          name:
-            Restore_Cache_padv_artifacts
-
-
-      - name:
-          Download Artifacts
-
-        uses:
-          actions/download-artifact@v4
-
-        with:
-          name:
-            Runprocess_padv_artifacts
-
-
-      - name:
-          Download Artifacts
-
-        uses:
-          actions/download-artifact@v4
-
-        with:
-          name:
-            Generate_PADV_Report_padv_artifacts
-
-
-      - name:
-          Upload Artifacts
-
-        if:
-          ${{ !cancelled() }}
-
-        uses:
-          actions/upload-artifact@v4
-
-        with:
-          name:
-            Collect_Artifacts_padv_artifacts
-
-          path:
-            |
-            derived/artifacts.dmr
-            Code
-
-          retention-days:
-            30
-
-
-      - name:
-          Save Cache
-
-        uses:
-          actions/cache@v4
-
-        with:
-          key:
-            padv_artifacts-cache-${{ github.sha }}
-
-          path:
-            |
-            Code
-            derived/artifacts.dmr
+          name: ${{ env._MW_PIPELINE_OPTIONS_ARTIFACTS_FILE_NAME_STEM }}
+          path: ${{ env._MW_PIPELINE_OPTIONS_ARTIFACTS_FILE_NAME_STEM }}/
