@@ -21,28 +21,6 @@ jobs:
   build_files:
     runs-on: 'self-hosted'
     steps:
-      - name: Force Locate and Path Python
-        shell: powershell
-        run: |
-          $pythonPath = (Get-Command python.exe -ErrorAction SilentlyContinue).Source
-          if ($pythonPath) {
-          $pythonDir = Split-Path $pythonPath
-          echo "Found Python at $pythonDir"
-          echo "$pythonDir" >> $env:GITHUB_PATH
-          } else {
-          # If it's not in the path, look in common installation folders
-          $commonPaths = @("C:\Python*", "$env:ProgramFiles\Python*", "$env:LocalAppData\Programs\Python\Python*")
-          foreach ($p in $commonPaths) {
-            $found = Get-ChildItem -Path $p -Filter "python.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
-            if ($found) {
-                $pythonDir = $found.DirectoryName
-                echo "Discovered Python at $pythonDir"
-                echo "$pythonDir" >> $env:GITHUB_PATH
-                return
-            }
-          }
-          Write-Error "Python was not found on this machine. Please install it!"
-          }
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Copy workflow files
