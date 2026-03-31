@@ -1,0 +1,34 @@
+name: Check Python Path
+on: [workflow_dispatch] # Allows you to run this manually from the "Actions" tab
+
+jobs:
+  debug-python:
+    runs-on: self-hosted
+    steps:
+      - name: Check Environment Path
+        shell: powershell
+        run: |
+          echo "Checking the current system PATH..."
+          $env:PATH -split ';'
+          
+      - name: Test python3 Command
+        shell: powershell
+        continue-on-error: true
+        run: |
+          echo "Testing 'python3'..."
+          python3 --version
+          Get-Command python3 -ErrorAction SilentlyContinue | Select-Object Name, Source
+
+      - name: Test python Command
+        shell: powershell
+        continue-on-error: true
+        run: |
+          echo "Testing 'python'..."
+          python --version
+          Get-Command python -ErrorAction SilentlyContinue | Select-Object Name, Source
+
+      - name: Locate Python Executable Manually
+        shell: powershell
+        run: |
+          echo "Searching C:\ for python.exe (this may take a moment)..."
+          Get-ChildItem -Path "C:\Program Files", "C:\Python*", "$env:LocalAppData\Programs\Python" -Filter "python.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object FullName
