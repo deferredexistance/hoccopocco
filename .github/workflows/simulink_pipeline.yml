@@ -72,7 +72,7 @@ jobs:
 
 
 
-  Runprocess:
+  Generate_Code_FC:
     if:
       ${{ !cancelled() }}
 
@@ -111,10 +111,10 @@ jobs:
 
         run:
           >
-          "C:\Program Files\MATLAB\R2025b\bin\matlab.exe"
+          C:\Program Files\MATLAB\R2025b\bin\matlab.exe 
           -nodesktop 
           -logfile output.log 
-          -batch "openProject(pwd);runprocess(Process = 'CIPipeline', Force = false, ExitInBatchMode = true, RerunFailedTasks = false, RerunErroredTasks = false, GenerateJUnitForProcess = false);" 
+          -batch "openProject(pwd);runprocess(Tasks = {'padv.builtin.task.GenerateCode|sl_model_file|FC|Model/FC.slx'}, Process = 'CIPipeline', Force = false, ExitInBatchMode = true, RerunFailedTasks = false, RerunErroredTasks = false, GenerateJUnitForProcess = false);" 
 
       - name:
           Upload Artifacts
@@ -127,7 +127,7 @@ jobs:
 
         with:
           name:
-            Runprocess_padv_artifacts
+            Generate_Code_FC_padv_artifacts
 
           path:
             |
@@ -145,7 +145,7 @@ jobs:
       ${{ !cancelled() }}
 
     needs:
-      Runprocess
+      Generate_Code_FC
 
     runs-on:
       self-hosted
@@ -176,7 +176,7 @@ jobs:
 
         with:
           name:
-            Runprocess_padv_artifacts
+            Generate_Code_FC_padv_artifacts
 
 
       - name:
@@ -190,7 +190,7 @@ jobs:
 
         run:
           >
-          "C:\Program Files\MATLAB\R2025b\bin\matlab.exe "
+          C:\Program Files\MATLAB\R2025b\bin\matlab.exe 
           -nodesktop 
           -logfile output.log 
           -batch "openProject(pwd);
@@ -251,7 +251,7 @@ jobs:
 
         with:
           name:
-            Runprocess_padv_artifacts
+            Generate_Code_FC_padv_artifacts
 
 
       - name:
