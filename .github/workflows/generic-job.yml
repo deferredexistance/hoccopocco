@@ -9,7 +9,7 @@ on:
 jobs:
   Generic-Job:
     name: Generic Job
-    runs-on: 'padv_demo_ci'
+    runs-on: 'self-hosted'
     env:
       MW_SUPPORT_PACKAGE_ROOT: 'C:\\ProgramData\\MATLAB\\SupportPackages\\R2025b' 
       MW_RELATIVE_PROJECT_PATH: '' 
