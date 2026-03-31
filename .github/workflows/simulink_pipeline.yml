@@ -14,7 +14,7 @@ permissions:
 
 env:
   PATH_TO_MATLAB:
-    "C:\\Program Files\\MATLAB\\R2025b\\bin\\"
+    /usr/local/MATLAB/R2025b/bin
 
 
 jobs:
@@ -27,7 +27,7 @@ jobs:
           Checkout Repository
 
         uses:
-          actions/checkout@v4.2.2
+          actions/checkout@v4
 
       - name:
           Restore Cache
@@ -87,7 +87,7 @@ jobs:
           Checkout Repository
 
         uses:
-          actions/checkout@v4.2.2
+          actions/checkout@v4
 
       - name:
           Download Artifacts
@@ -99,31 +99,22 @@ jobs:
           name:
             Restore_Cache_padv_artifacts
 
-          run-id:
-            ${{ github.run_id }}
-
 
       - name:
           Setup MATLAB
 
         run:
-          echo "$env:PATH_TO_MATLAB" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-
-        shell:
-          pwsh
+          echo "$PATH_TO_MATLAB" >> $GITHUB_PATH
 
       - name:
           Launch MATLAB
 
         run:
           >
-          & "C:\Program Files\MATLAB\R2025b\bin\matlab.exe"
-          -nodesktop
-          -logfile output.log
-          -batch "openProject(pwd);runprocess(Tasks = {'padv.builtin.task.GenerateCode|sl_model_file|FC|Model/FC.slx'}, Process = 'CIPipeline', Force = false, ExitInBatchMode = true, RerunFailedTasks = false, RerunErroredTasks = false, GenerateJUnitForProcess = false);"
-
-        shell:
-          pwsh
+          /usr/local/MATLAB/R2025b/bin/matlab.exe 
+          -nodesktop 
+          -logfile output.log 
+          -batch "openProject(pwd);runprocess(Tasks = {'padv.builtin.task.GenerateCode|sl_model_file|FC|Model/FC.slx'}, Process = 'CIPipeline', Force = false, ExitInBatchMode = true, RerunFailedTasks = false, RerunErroredTasks = false, GenerateJUnitForProcess = false);" 
 
       - name:
           Upload Artifacts
@@ -164,7 +155,7 @@ jobs:
           Checkout Repository
 
         uses:
-          actions/checkout@v4.2.2
+          actions/checkout@v4
 
       - name:
           Download Artifacts
@@ -175,9 +166,6 @@ jobs:
         with:
           name:
             Restore_Cache_padv_artifacts
-
-          run-id:
-            ${{ github.run_id }}
 
 
       - name:
@@ -190,31 +178,24 @@ jobs:
           name:
             Generate_Code_FC_padv_artifacts
 
-          run-id:
-            ${{ github.run_id }}
-
 
       - name:
           Setup MATLAB
 
         run:
-          echo "$env:PATH_TO_MATLAB" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-
-        shell:
-          pwsh
+          echo "$PATH_TO_MATLAB" >> $GITHUB_PATH
 
       - name:
           Generate PADV Report
 
         run:
           >
-          & "C:\Program Files\MATLAB\R2025b\bin\matlab.exe"
-          -nodesktop
-          -logfile output.log
-          -batch "openProject(pwd);rptObj=padv.ProcessAdvisorReportGenerator(Process = 'CIPipeline', Format='pdf', OutputPath=fullfile(currentProject().RootFolder,'ProcessAdvisorReport'));rptObj.generateReport();"
-
-        shell:
-          pwsh
+          /usr/local/MATLAB/R2025b/bin/matlab.exe 
+          -nodesktop 
+          -logfile output.log 
+          -batch "openProject(pwd);
+          rptObj=padv.ProcessAdvisorReportGenerator(Process = 'CIPipeline', Format='pdf', OutputPath=fullfile(currentProject().RootFolder,'ProcessAdvisorReport'));
+          rptObj.generateReport();" 
 
       - name:
           Upload Artifacts
@@ -261,9 +242,6 @@ jobs:
           name:
             Restore_Cache_padv_artifacts
 
-          run-id:
-            ${{ github.run_id }}
-
 
       - name:
           Download Artifacts
@@ -275,9 +253,6 @@ jobs:
           name:
             Generate_Code_FC_padv_artifacts
 
-          run-id:
-            ${{ github.run_id }}
-
 
       - name:
           Download Artifacts
@@ -288,9 +263,6 @@ jobs:
         with:
           name:
             Generate_PADV_Report_padv_artifacts
-
-          run-id:
-            ${{ github.run_id }}
 
 
       - name:
@@ -329,3 +301,8 @@ jobs:
             |
             Code
             derived/artifacts.dmr
+
+
+
+
+
