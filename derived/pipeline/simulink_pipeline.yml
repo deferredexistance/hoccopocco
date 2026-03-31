@@ -29,7 +29,7 @@ jobs:
           cp "/path/to/ir_dag.json" "${{env.MW_RELATIVE_PROJECT_PATH}}${{env.MW_PIPELINE_GEN_DIRECTORY}}/" 
           cp "/path/to/simulink_pipeline.yml" "${{env.MW_RELATIVE_PROJECT_PATH}}${{env.MW_PIPELINE_GEN_DIRECTORY}}/" 
       - name: Upload workflow files
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: workflow_generated_files
           path: ${{env.MW_RELATIVE_PROJECT_PATH}}${{env.MW_PIPELINE_GEN_DIRECTORY}}/
