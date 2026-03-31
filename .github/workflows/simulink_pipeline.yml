@@ -111,9 +111,7 @@ jobs:
 
         run:
           >
-          matlab 
-          -nodesktop 
-          -logfile output.log 
+          C:\\Program Files\\MATLAB\\R2025b\\bin\\matlab.exe -nodesktop -logfile  
           -batch "openProject(pwd);runprocess(Tasks = {'padv.builtin.task.GenerateCode|sl_model_file|FC|Model/FC.slx'}, Process = 'CIPipeline', Force = false, ExitInBatchMode = true, RerunFailedTasks = false, RerunErroredTasks = false, GenerateJUnitForProcess = false);" 
 
       - name:
@@ -190,9 +188,7 @@ jobs:
 
         run:
           >
-          matlab 
-          -nodesktop 
-          -logfile output.log 
+          C:\\Program Files\\MATLAB\\R2025b\\bin\\matlab.exe -nodesktop -logfile  
           -batch "openProject(pwd);
           rptObj=padv.ProcessAdvisorReportGenerator(Process = 'CIPipeline', Format='pdf', OutputPath=fullfile(currentProject().RootFolder,'ProcessAdvisorReport'));
           rptObj.generateReport();" 
