@@ -1,304 +1,44 @@
-name:
-  simulink_pipeline
 
-on:
-  workflow_dispatch:
-
-permissions:
-  checks:
-    write
-
-  contents:
-    read
-
-
+name: GitHub MATLAB Workflow
+on: # You must define at least one trigger for each workflow.
+  workflow_dispatch:  # Set manual triggers as an optional trigger.
+  pull_request:       # Set pull_request as an automatic trigger. 
+                      # By default, a pull_request runs when a pull_request 
+                      # event's activity type is opened, synchronize, or reopened
+    # opened: This triggers the workflow when a pull request is initially opened.
+    # synchronize: This triggers the workflow when new commits are pushed to a pull request branch. This includes any time the pull request's head branch is updated with new commits.
+    # reopened: This triggers the workflow when a previously closed pull request is reopened
+    types: [opened, synchronize, reopened]
 env:
-  PATH_TO_MATLAB:
-    "C:\\Program Files\\MATLAB\\R2025b\\bin\\"
-
-
+  MW_SUPPORT_PACKAGE_ROOT: 'C:\\ProgramData\\MATLAB\\SupportPackages\\R2025b'
+  MW_RELATIVE_PROJECT_PATH: '${{ github.workspace }}/'
+  MW_PIPELINE_GEN_DIRECTORY: "_pipelineGen_" 
+  # Note: You should never hardcode secrets or tokens in the YAML file.
+  # For JFrog Artifactory storage services, you need to set the JFrog API token in GitHub repository secrets with the 'ARTIFACTORY_API_TOKEN_SECRET' ID. 
+  # For S3 storage services, you need to set the AWS S3 access key in GitHub repository secrets with the 'S3_AWS_SECRET_ACCESS_KEY_SECRET' ID. 
+  # For Azure Blob storage services, you need to set the Azure storage account connection string in GitHub repository secrets with the 'AZ_CONNECTION_STRING_SECRET' ID. 
 jobs:
-  Restore_Cache:
-    runs-on:
-      self-hosted
-
+  build_files:
+    runs-on: 'padv_demo_ci'
     steps:
-      - name:
-          Checkout Repository
-
-        uses:
-          actions/checkout@v4
-
-      - name:
-          Restore Cache
-
-        uses:
-          actions/cache@v4
-
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Copy workflow files
+        run: |
+          mkdir "${{env.MW_RELATIVE_PROJECT_PATH}}${{env.MW_PIPELINE_GEN_DIRECTORY}}" 
+          cp "/path/to/ir_dag.json" "${{env.MW_RELATIVE_PROJECT_PATH}}${{env.MW_PIPELINE_GEN_DIRECTORY}}/" 
+          cp "/path/to/simulink_pipeline.yml" "${{env.MW_RELATIVE_PROJECT_PATH}}${{env.MW_PIPELINE_GEN_DIRECTORY}}/" 
+      - name: Upload workflow files
+        uses: actions/upload-artifact@v4
         with:
-          key:
-            padv_artifacts-${{ github.run_id }}-${{ github.run_attempt }}
-
-          restore-keys:
-            padv_artifacts-cache
-
-          path:
-            |
-            Code
-            derived/artifacts.dmr
-
-
-      - name:
-          Upload Artifacts
-
-        if:
-          ${{ !cancelled() }}
-
-        uses:
-          actions/upload-artifact@v4
-
-        with:
-          name:
-            Restore_Cache_padv_artifacts
-
-          path:
-            |
-            derived/artifacts.dmr
-            Code
-
-          retention-days:
-            30
-
-
-
-
-  Generate_Code_FC:
-    if:
-      ${{ !cancelled() }}
-
-    needs:
-      Restore_Cache
-
-    runs-on:
-      self-hosted
-
-    steps:
-      - name:
-          Checkout Repository
-
-        uses:
-          actions/checkout@v4
-
-      - name:
-          Download Artifacts
-
-        uses:
-          actions/download-artifact@v4
-
-        with:
-          name:
-            Restore_Cache_padv_artifacts
-
-
-      - name:
-          Setup MATLAB
-
-        run:
-          echo "$PATH_TO_MATLAB" >> $GITHUB_PATH
-
-      - name:
-          Launch MATLAB
-
-        run:
-          >
-          C:\\Program Files\\MATLAB\\R2025b\\bin\\matlab.exe -nodesktop -logfile  
-          -batch "openProject(pwd);runprocess(Tasks = {'padv.builtin.task.GenerateCode|sl_model_file|FC|Model/FC.slx'}, Process = 'CIPipeline', Force = false, ExitInBatchMode = true, RerunFailedTasks = false, RerunErroredTasks = false, GenerateJUnitForProcess = false);" 
-
-      - name:
-          Upload Artifacts
-
-        if:
-          ${{ !cancelled() }}
-
-        uses:
-          actions/upload-artifact@v4
-
-        with:
-          name:
-            Generate_Code_FC_padv_artifacts
-
-          path:
-            |
-            derived/artifacts.dmr
-            Code
-
-          retention-days:
-            30
-
-
-
-
-  Generate_PADV_Report:
-    if:
-      ${{ !cancelled() }}
-
-    needs:
-      Generate_Code_FC
-
-    runs-on:
-      self-hosted
-
-    steps:
-      - name:
-          Checkout Repository
-
-        uses:
-          actions/checkout@v4
-
-      - name:
-          Download Artifacts
-
-        uses:
-          actions/download-artifact@v4
-
-        with:
-          name:
-            Restore_Cache_padv_artifacts
-
-
-      - name:
-          Download Artifacts
-
-        uses:
-          actions/download-artifact@v4
-
-        with:
-          name:
-            Generate_Code_FC_padv_artifacts
-
-
-      - name:
-          Setup MATLAB
-
-        run:
-          echo "$PATH_TO_MATLAB" >> $GITHUB_PATH
-
-      - name:
-          Generate PADV Report
-
-        run:
-          >
-          C:\\Program Files\\MATLAB\\R2025b\\bin\\matlab.exe -nodesktop -logfile  
-          -batch "openProject(pwd);
-          rptObj=padv.ProcessAdvisorReportGenerator(Process = 'CIPipeline', Format='pdf', OutputPath=fullfile(currentProject().RootFolder,'ProcessAdvisorReport'));
-          rptObj.generateReport();" 
-
-      - name:
-          Upload Artifacts
-
-        if:
-          ${{ !cancelled() }}
-
-        uses:
-          actions/upload-artifact@v4
-
-        with:
-          name:
-            Generate_PADV_Report_padv_artifacts
-
-          path:
-            |
-            derived/artifacts.dmr
-            ProcessAdvisorReport.pdf
-
-          retention-days:
-            30
-
-
-
-
-  Collect_Artifacts:
-    if:
-      ${{ !cancelled() }}
-
-    needs:
-      Generate_PADV_Report
-
-    runs-on:
-      self-hosted
-
-    steps:
-      - name:
-          Download Artifacts
-
-        uses:
-          actions/download-artifact@v4
-
-        with:
-          name:
-            Restore_Cache_padv_artifacts
-
-
-      - name:
-          Download Artifacts
-
-        uses:
-          actions/download-artifact@v4
-
-        with:
-          name:
-            Generate_Code_FC_padv_artifacts
-
-
-      - name:
-          Download Artifacts
-
-        uses:
-          actions/download-artifact@v4
-
-        with:
-          name:
-            Generate_PADV_Report_padv_artifacts
-
-
-      - name:
-          Upload Artifacts
-
-        if:
-          ${{ !cancelled() }}
-
-        uses:
-          actions/upload-artifact@v4
-
-        with:
-          name:
-            Collect_Artifacts_padv_artifacts
-
-          path:
-            |
-            derived/artifacts.dmr
-            Code
-
-          retention-days:
-            30
-
-
-      - name:
-          Save Cache
-
-        uses:
-          actions/cache@v4
-
-        with:
-          key:
-            padv_artifacts-cache-${{ github.sha }}
-
-          path:
-            |
-            Code
-            derived/artifacts.dmr
-
-
-
-
-
+          name: workflow_generated_files
+          path: ${{env.MW_RELATIVE_PROJECT_PATH}}${{env.MW_PIPELINE_GEN_DIRECTORY}}/
+  
+  padv_builtin_task_GenerateCode_FC:
+    needs: [build_files]
+    if: always() && !cancelled()
+    uses: ./.github/workflows/generic-job.yml
+    secrets: inherit
+    with:
+      job-name: padv_builtin_task_GenerateCode_FC 
+  

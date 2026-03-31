@@ -1,5 +1,11 @@
-GitHubOptions = padv.pipeline.GitHubOptions(GeneratorVersion=1)
+GitHubOptions = padv.pipeline.GitHubOptions(GeneratorVersion=2)
 GitHubOptions.MatlabInstallationLocation = '"C:\\Program Files\\MATLAB\\R2025b\\bin\\"';
+GitHubOptions.RunnerLabels = "padv_demo_ci";
+GitHubOptions.SupportPackageRoot = "C:\\ProgramData\\MATLAB\\SupportPackages\\R2025b";
+	
+
+GitHubOptions.ArtifactServiceMode = "network";
+GitHubOptions.NetworkStoragePath = "/artifactManagement/cacheStorage";
 
 LaunchCommandString = ['C:\\Program Files\\MATLAB\\R2025b\\bin\\matlab.exe', ...
     ' -nodesktop -logfile'];
