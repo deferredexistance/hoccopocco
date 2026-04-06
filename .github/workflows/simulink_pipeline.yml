@@ -11,7 +11,7 @@ on: # You must define at least one trigger for each workflow.
     types: [opened, synchronize, reopened]
 env:
   MW_SUPPORT_PACKAGE_ROOT: 'C:\\ProgramData\\MATLAB\\SupportPackages\\R2025b'
-  MW_RELATIVE_PROJECT_PATH: '${{ github.workspace }}/'
+  MW_RELATIVE_PROJECT_PATH: ''
   MW_PIPELINE_GEN_DIRECTORY: "_pipelineGen_" 
   # Note: You should never hardcode secrets or tokens in the YAML file.
   # For JFrog Artifactory storage services, you need to set the JFrog API token in GitHub repository secrets with the 'ARTIFACTORY_API_TOKEN_SECRET' ID. 
@@ -19,15 +19,15 @@ env:
   # For Azure Blob storage services, you need to set the Azure storage account connection string in GitHub repository secrets with the 'AZ_CONNECTION_STRING_SECRET' ID. 
 jobs:
   build_files:
-    runs-on: 'self-hosted'
+    runs-on: 'cicd'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Copy workflow files
         run: |
           mkdir "${{env.MW_RELATIVE_PROJECT_PATH}}${{env.MW_PIPELINE_GEN_DIRECTORY}}" 
-          cp ".github/workflows/ir_dag.json" "${{env.MW_RELATIVE_PROJECT_PATH}}${{env.MW_PIPELINE_GEN_DIRECTORY}}/" 
-          cp ".github/workflows/simulink_pipeline.yml" "${{env.MW_RELATIVE_PROJECT_PATH}}${{env.MW_PIPELINE_GEN_DIRECTORY}}/" 
+          cp "/path/to/ir_dag.json" "${{env.MW_RELATIVE_PROJECT_PATH}}${{env.MW_PIPELINE_GEN_DIRECTORY}}/" 
+          cp "/path/to/simulink_pipeline.yml" "${{env.MW_RELATIVE_PROJECT_PATH}}${{env.MW_PIPELINE_GEN_DIRECTORY}}/" 
       - name: Upload workflow files
         uses: actions/upload-artifact@v4
         with:
