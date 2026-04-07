@@ -60,7 +60,7 @@
     "RelativeProjectPath": "",
     "RemoteBuildCacheName": "GitHub_MATLAB_Pipeline",
     "ArtifactServiceMode": "network",
-    "NetworkStoragePath": "C:\\actions-runner\\artifacts\\artifactManagement",
+    "NETWORK_STORAGE_PATH": "C:\\actions-runner\\artifacts\\artifactManagement",
     "ArtifactoryUrl": "",
     "ArtifactoryRepoName": "",
     "S3BucketName": "",
