@@ -139,7 +139,7 @@ function processmodel(pm)
     % Tools required: Embedded Coder
     % By default, we generate code for all models in the project;
     if includeGenerateCodeTask
-        codegenTask = pm.addTask(padv.builtin.task.GenerateCode(IterationQuery=findModels));
+        codegenTask = pm.addTask(padv.builtin.task.GenerateCode(Name="CodeGenerationTask",Title="Code Generation Task",IterationQuery=findModels));
     end
 
     %% Check coding standards

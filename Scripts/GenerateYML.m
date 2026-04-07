@@ -1,4 +1,4 @@
-GitHubOptions = padv.pipeline.GitHubOptions(GeneratorVersion=2)
+GitHubOptions = padv.pipeline.GitHubOptions(GeneratorVersion=2);
 %GitHubOptions.MatlabInstallationLocation = '"C:\\Program Files\\MATLAB\\R2025b\\bin\\"';
 GitHubOptions.RunnerLabels = "cicd";
 GitHubOptions.SupportPackageRoot = "C:\\ProgramData\\MATLAB\\SupportPackages\\R2025b";
