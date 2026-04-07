@@ -12,6 +12,6 @@ GitHubOptions.UseMatlabPlugin = false;
 %     ' -nodesktop -logfile'];
 % 
 % GitHubOptions.MatlabLaunchCmd = LaunchCommandString;
-GitHubOptions.MatlabStartupOptions = "";
+%GitHubOptions.MatlabStartupOptions = "";
 GitHubOptions.PipelineArchitecture = "SerialStages";
 padv.pipeline.generatePipeline(GitHubOptions)
