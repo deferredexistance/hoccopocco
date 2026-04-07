@@ -11,7 +11,7 @@ GitHubOptions.UseMatlabPlugin = false;
 % LaunchCommandString = ['C:\\Program Files\\MATLAB\\R2025b\\bin\\matlab.exe', ...
 %     ' -nodesktop -logfile'];
 % 
-% GitHubOptions.MatlabLaunchCmd = LaunchCommandString;
+% GitHubOptions.MatlabLaunchCmd = LaunchCommandString;this is disabled
 %GitHubOptions.MatlabStartupOptions = "";
 GitHubOptions.PipelineArchitecture = "SerialStages";
 padv.pipeline.generatePipeline(GitHubOptions)
