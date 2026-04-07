@@ -1,0 +1,6 @@
+Notes For Updates 
+
+- cp ".github/workflows/ir_dag.json" "${{env.MW_RELATIVE_PROJECT_PATH}}${{env.MW_PIPELINE_GEN_DIRECTORY}}/" 
+          cp ".github/workflows/simulink_pipeline.yml" "${{env.MW_RELATIVE_PROJECT_PATH}}${{env.MW_PIPELINE_GEN_DIRECTORY}}/"
+
+          NETWORK_STORAGE_PATH
