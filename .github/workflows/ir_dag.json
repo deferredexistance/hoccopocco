@@ -42,7 +42,7 @@
       "DryRun": false
     },
     "PipelineArchitecture": "SerialStages",
-    "MatlabLaunchCmd": "C:\\\\Program Files\\\\MATLAB\\\\R2025b\\\\bin\\\\matlab.exe -nodesktop -logfile",
+    "MatlabLaunchCmd": "matlab",
     "MatlabStartupOptions": "",
     "AddBatchStartupOption": true,
     "GeneratedPipelineDirectory": ".github\\workflows",
@@ -60,7 +60,7 @@
     "RelativeProjectPath": "",
     "RemoteBuildCacheName": "GitHub_MATLAB_Pipeline",
     "ArtifactServiceMode": "network",
-    "NETWORK_STORAGE_PATH": "/artifactManagement/cacheStorage",
+    "NetworkStoragePath": "/artifactManagement/cacheStorage",
     "ArtifactoryUrl": "",
     "ArtifactoryRepoName": "",
     "S3BucketName": "",
