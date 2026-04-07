@@ -76,9 +76,7 @@
       "Tasks": "padv.builtin.task.GenerateCode|sl_model_file|FC|Model/FC.slx",
       "OutputsPaths": [
         "Code",
-        "derived",
-        ""
-      ],
+        "derived"],
       "JunitFiles": "PA_Results/junit/padv_builtin_task_GenerateCode_FC_JUnit.xml",
       "PredecessorJobsNames": [],
       "SuccessorJobsNames": [],
@@ -128,7 +126,5 @@
   },
   "OutputsPaths": [
     "Code",
-    "derived",
-    ""
-  ]
+    "derived"]
 }

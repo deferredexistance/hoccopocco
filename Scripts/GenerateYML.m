@@ -1,5 +1,5 @@
 GitHubOptions = padv.pipeline.GitHubOptions(GeneratorVersion=2)
-GitHubOptions.MatlabInstallationLocation = '"C:\\Program Files\\MATLAB\\R2025b\\bin\\"';
+%GitHubOptions.MatlabInstallationLocation = '"C:\\Program Files\\MATLAB\\R2025b\\bin\\"';
 GitHubOptions.RunnerLabels = "cicd";
 GitHubOptions.SupportPackageRoot = "C:\\ProgramData\\MATLAB\\SupportPackages\\R2025b";
 GitHubOptions.GeneratedPipelineDirectory = ".github\workflows"	
@@ -8,6 +8,7 @@ GitHubOptions.ArtifactServiceMode = "network";
 GitHubOptions.NetworkStoragePath = "/artifactManagement/cacheStorage";
 GitHubOptions.RelativeProjectPath = "";
 GitHubOptions.UseMatlabPlugin = false;
+GitHubOptions.EnableOpenTelemetry = true;
 % LaunchCommandString = ['C:\\Program Files\\MATLAB\\R2025b\\bin\\matlab.exe', ...
 %     ' -nodesktop -logfile'];
 % 
