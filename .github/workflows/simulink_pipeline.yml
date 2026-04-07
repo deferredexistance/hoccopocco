@@ -13,6 +13,7 @@ env:
   MW_SUPPORT_PACKAGE_ROOT: 'C:\\ProgramData\\MATLAB\\SupportPackages\\R2025b'
   MW_RELATIVE_PROJECT_PATH: ''
   MW_PIPELINE_GEN_DIRECTORY: "_pipelineGen_" 
+  MW_IR_DAG_FILE_PATH: ".github/workflows/" 
   # Note: You should never hardcode secrets or tokens in the YAML file.
   # For JFrog Artifactory storage services, you need to set the JFrog API token in GitHub repository secrets with the 'ARTIFACTORY_API_TOKEN_SECRET' ID. 
   # For S3 storage services, you need to set the AWS S3 access key in GitHub repository secrets with the 'S3_AWS_SECRET_ACCESS_KEY_SECRET' ID. 
@@ -23,22 +24,23 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Copy workflow files
-        run: |
-          mkdir "${{env.MW_RELATIVE_PROJECT_PATH}}${{env.MW_PIPELINE_GEN_DIRECTORY}}" 
-          cp ".github/workflows/ir_dag.json" "${{env.MW_RELATIVE_PROJECT_PATH}}${{env.MW_PIPELINE_GEN_DIRECTORY}}/" 
-          cp ".github/workflows/simulink_pipeline.yml" "${{env.MW_RELATIVE_PROJECT_PATH}}${{env.MW_PIPELINE_GEN_DIRECTORY}}/" 
+        run: >
+          python3 -c "import shutil,os; os.makedirs(r'${{env.MW_RELATIVE_PROJECT_PATH}}${{env.MW_PIPELINE_GEN_DIRECTORY}}', exist_ok=True); 
+          shutil.copy(r'${{env.MW_IR_DAG_FILE_PATH}}ir_dag.json',r'${{env.MW_RELATIVE_PROJECT_PATH}}${{env.MW_PIPELINE_GEN_DIRECTORY}}/')" 
       - name: Upload workflow files
         uses: actions/upload-artifact@v4
         with:
           name: workflow_generated_files
           path: ${{env.MW_RELATIVE_PROJECT_PATH}}${{env.MW_PIPELINE_GEN_DIRECTORY}}/
   
-  padv_builtin_task_GenerateCode_FC:
+  CodeGenerationTask_FC:
     needs: [build_files]
     if: always() && !cancelled()
     uses: ./.github/workflows/generic-job.yml
     secrets: inherit
     with:
-      job-name: padv_builtin_task_GenerateCode_FC 
+      job-name: CodeGenerationTask_FC 
   

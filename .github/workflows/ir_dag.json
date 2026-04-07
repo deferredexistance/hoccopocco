@@ -3,10 +3,10 @@
   "ProcessName": "CIPipeline",
   "FileName": "simulink_pipeline.yml",
   "IncrementalPipelineEnabled": true,
-  "StartJobName": "padv_builtin_task_GenerateCode_FC",
-  "EndJobName": "padv_builtin_task_GenerateCode_FC",
+  "StartJobName": "CodeGenerationTask_FC",
+  "EndJobName": "CodeGenerationTask_FC",
   "DerivedFolderPath": "derived",
-  "ReportOutputPath": "",
+  "ReportOutputPath": "$PROJECTROOT/PA_Results/Report",
   "HasNestedParallelBranches": false,
   "Options": {
     "RunnerLabels": "cicd",
@@ -18,28 +18,28 @@
     "CheckoutSubmodules": "false",
     "TemplatePath": "./.github/workflows/generic-job.yml",
     "RunprocessCommandOptions": {
-      "EnableTaskLogging": true,
-      "DryRunLicenseCheckout": false,
-      "MarkStale": false,
-      "SuppressOutputWhenInteractive": [],
-      "RerunFailedTasks": false,
-      "ReportFormat": "pdf",
-      "EnableOpenTelemetry": true,
-      "MakeSureOutputArtifactsWriteable": false,
-      "Isolation": false,
-      "ReportPath": "ProcessAdvisorReport",
-      "RefreshProcessModel": true,
-      "DiscardDictionaryChanges": [],
-      "RerunErroredTasks": false,
-      "Force": false,
-      "DeleteOutputs": false,
-      "RunWithoutSaving": false,
       "Clean": false,
-      "GenerateReport": false,
-      "ExitInBatchMode": false,
+      "DryRun": false,
+      "DeleteOutputs": false,
+      "Isolation": false,
       "GenerateJUnitForProcess": false,
+      "SuppressOutputWhenInteractive": [],
+      "RerunErroredTasks": false,
+      "MarkStale": false,
+      "RefreshProcessModel": true,
+      "DryRunLicenseCheckout": false,
+      "DiscardDictionaryChanges": [],
+      "ExitInBatchMode": false,
+      "RerunFailedTasks": false,
       "ReanalyzeProjectAnalysisIssues": true,
-      "DryRun": false
+      "MakeSureOutputArtifactsWriteable": false,
+      "EnableTaskLogging": true,
+      "ReportFormat": "pdf",
+      "Force": false,
+      "EnableOpenTelemetry": true,
+      "RunWithoutSaving": false,
+      "GenerateReport": false,
+      "ReportPath": "ProcessAdvisorReport"
     },
     "PipelineArchitecture": "SerialStages",
     "MatlabLaunchCmd": "matlab",
@@ -48,7 +48,7 @@
     "GeneratedPipelineDirectory": ".github\\workflows",
     "GenerateReport": true,
     "ReportFormat": "pdf",
-    "ReportPath": "ProcessAdvisorReport",
+    "ReportPath": "$PROJECTROOT/PA_Results/Report/ProcessAdvisorReport",
     "StopOnStageFailure": false,
     "CheckOutdatedResultsAfterMerge": true,
     "EnablePipelineCaching": true,
@@ -60,7 +60,7 @@
     "RelativeProjectPath": "",
     "RemoteBuildCacheName": "GitHub_MATLAB_Pipeline",
     "ArtifactServiceMode": "network",
-    "NETWORK_STORAGE_PATH": "/artifactManagement/cacheStorage",
+    "NetworkStoragePath": "/artifactManagement/cacheStorage",
     "ArtifactoryUrl": "",
     "ArtifactoryRepoName": "",
     "S3BucketName": "",
@@ -71,14 +71,15 @@
     "CacheFallbackBranches": "main"
   },
   "Jobs": {
-    "padv_builtin_task_GenerateCode_FC": {
-      "Name": "padv_builtin_task_GenerateCode_FC",
-      "Tasks": "padv.builtin.task.GenerateCode|sl_model_file|FC|Model/FC.slx",
+    "CodeGenerationTask_FC": {
+      "Name": "CodeGenerationTask_FC",
+      "Tasks": "CodeGenerationTask|sl_model_file|FC|Model/FC.slx",
       "OutputsPaths": [
         "Code",
-        "derived"
+        "derived",
+        "$PROJECTROOT/PA_Results/Report"
       ],
-      "JunitFiles": "PA_Results/junit/padv_builtin_task_GenerateCode_FC_JUnit.xml",
+      "JunitFiles": "PA_Results/junit/CodeGenerationTask_FC_JUnit.xml",
       "PredecessorJobsNames": [],
       "SuccessorJobsNames": [],
       "Commands": [
@@ -100,14 +101,14 @@
       "IsEndJob": true,
       "IsCollectingArtifacts": true,
       "IsCollectingJunitFiles": false,
-      "BranchName": "br_padv_builtin_task_GenerateCode_FC",
-      "DownloadBranchName": "br_padv_builtin_task_GenerateCode_FC",
+      "BranchName": "br_CodeGenerationTask_FC",
+      "DownloadBranchName": "br_CodeGenerationTask_FC",
       "MergingSettings": []
     }
   },
   "Branches": {
-    "br_padv_builtin_task_GenerateCode_FC": {
-      "Name": "br_padv_builtin_task_GenerateCode_FC",
+    "br_CodeGenerationTask_FC": {
+      "Name": "br_CodeGenerationTask_FC",
       "PredecessorBranchesNames": [],
       "AllPredecessorBranchesNames": [],
       "SuccessorBranchesNames": [],
@@ -115,18 +116,19 @@
         "Code",
         "derived"
       ],
-      "JobsNames": "padv_builtin_task_GenerateCode_FC",
+      "JobsNames": "CodeGenerationTask_FC",
       "Level": 0
     }
   },
   "Stages": {
     "Name": "Stage_1",
-    "BranchesNames": "br_padv_builtin_task_GenerateCode_FC",
+    "BranchesNames": "br_CodeGenerationTask_FC",
     "Level": 0,
     "HasParallelBranches": false
   },
   "OutputsPaths": [
     "Code",
-    "derived"
+    "derived",
+    "$PROJECTROOT/PA_Results/Report"
   ]
 }
