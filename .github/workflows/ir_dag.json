@@ -36,7 +36,7 @@
       "EnableTaskLogging": true,
       "ReportFormat": "pdf",
       "Force": false,
-      "EnableOpenTelemetry": true,
+      "EnableOpenTelemetry": false,
       "RunWithoutSaving": false,
       "GenerateReport": false,
       "ReportPath": "ProcessAdvisorReport"
@@ -55,7 +55,7 @@
     "MatlabInstallationLocation": "PATH_TO_MATLAB",
     "ArtifactZipFileName": "padv_artifacts.zip",
     "GeneratorVersion": 2,
-    "EnableOpenTelemetry": true,
+    "EnableOpenTelemetry": false,
     "SupportPackageRoot": "C:\\\\ProgramData\\\\MATLAB\\\\SupportPackages\\\\R2025b",
     "RelativeProjectPath": "",
     "RemoteBuildCacheName": "GitHub_MATLAB_Pipeline",

@@ -8,7 +8,7 @@ GitHubOptions.ArtifactServiceMode = "network";
 GitHubOptions.NetworkStoragePath = "/artifactManagement/cacheStorage";
 GitHubOptions.RelativeProjectPath = "";
 GitHubOptions.UseMatlabPlugin = false;
-GitHubOptions.EnableOpenTelemetry = true;
+GitHubOptions.EnableOpenTelemetry = false;
 GitHubOptions.ReportPath = "$PROJECTROOT/PA_Results/Report/ProcessAdvisorReport"
 % LaunchCommandString = ['C:\\Program Files\\MATLAB\\R2025b\\bin\\matlab.exe', ...
 %     ' -nodesktop -logfile'];
