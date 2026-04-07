@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   workflow_call:
     inputs:
-      job-name:
+      job-name: Pipeline Stages
         required: true
         type: string
 jobs:

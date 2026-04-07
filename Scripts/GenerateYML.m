@@ -5,7 +5,7 @@ GitHubOptions.SupportPackageRoot = "C:\\ProgramData\\MATLAB\\SupportPackages\\R2
 GitHubOptions.GeneratedPipelineDirectory = ".github\workflows"	
 GitHubOptions.RemoteBuildCacheName = "GitHub_MATLAB_Pipeline"
 GitHubOptions.ArtifactServiceMode = "network";
-GitHubOptions.NetworkStoragePath = "/artifactManagement/cacheStorage";
+GitHubOptions.NetworkStoragePath = "C:\actions-runner\artifacts\artifactManagement";
 GitHubOptions.RelativeProjectPath = "";
 LaunchCommandString = ['C:\\Program Files\\MATLAB\\R2025b\\bin\\matlab.exe', ...
     ' -nodesktop -logfile'];
