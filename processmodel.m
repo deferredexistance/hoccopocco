@@ -11,7 +11,7 @@ function processmodel(pm)
 
     includeModelMaintainabilityMetricTask = false;
     includeModelTestingMetricTask = false;
-    includeModelStandardsTask = false;
+    includeModelStandardsTask = true;
     includeDesignErrorDetectionTask = false;
     includeFindClones = false;
     includeModelComparisonTask = false;
@@ -56,7 +56,7 @@ function processmodel(pm)
     %% Check modeling standards
     % Tools required: Model Advisor
     if includeModelStandardsTask
-        maTask = pm.addTask(padv.builtin.task.RunModelStandards(IterationQuery=findModels));
+        maTask = pm.addTask(padv.builtin.task.RunModelStandards(Name = "StandardsCheck",Title = "Standards Testing",IterationQuery=findModels));
         maTask.ReportPath = fullfile( ...
             defaultResultPath,'model_standards_results');
     end

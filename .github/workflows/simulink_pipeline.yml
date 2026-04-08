@@ -36,8 +36,16 @@ jobs:
           name: workflow_generated_files
           path: ${{env.MW_RELATIVE_PROJECT_PATH}}${{env.MW_PIPELINE_GEN_DIRECTORY}}/
   
-  CodeGenerationTask_FC:
+  StandardsCheck_FC:
     needs: [build_files]
+    if: always() && !cancelled()
+    uses: ./.github/workflows/generic-job.yml
+    secrets: inherit
+    with:
+      job-name: StandardsCheck_FC 
+  
+  CodeGenerationTask_FC:
+    needs: [StandardsCheck_FC]
     if: always() && !cancelled()
     uses: ./.github/workflows/generic-job.yml
     secrets: inherit

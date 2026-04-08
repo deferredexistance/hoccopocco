@@ -3,7 +3,7 @@
   "ProcessName": "CIPipeline",
   "FileName": "simulink_pipeline.yml",
   "IncrementalPipelineEnabled": true,
-  "StartJobName": "CodeGenerationTask_FC",
+  "StartJobName": "StandardsCheck_FC",
   "EndJobName": "CodeGenerationTask_FC",
   "DerivedFolderPath": "derived",
   "ReportOutputPath": "$PROJECTROOT/PA_Results/Report",
@@ -71,17 +71,16 @@
     "CacheFallbackBranches": "main"
   },
   "Jobs": {
-    "CodeGenerationTask_FC": {
-      "Name": "CodeGenerationTask_FC",
-      "Tasks": "CodeGenerationTask|sl_model_file|FC|Model/FC.slx",
+    "StandardsCheck_FC": {
+      "Name": "StandardsCheck_FC",
+      "Tasks": "StandardsCheck|sl_model_file|FC|Model/FC.slx",
       "OutputsPaths": [
-        "Code",
-        "derived",
-        "$PROJECTROOT/PA_Results/Report"
+        "PA_Results/FC/model_standards_results",
+        "derived"
       ],
-      "JunitFiles": "PA_Results/junit/CodeGenerationTask_FC_JUnit.xml",
+      "JunitFiles": "PA_Results/junit/StandardsCheck_FC_JUnit.xml",
       "PredecessorJobsNames": [],
-      "SuccessorJobsNames": [],
+      "SuccessorJobsNames": "CodeGenerationTask_FC",
       "Commands": [
         "padv.util.initSessionDataDictionaryCache();",
         "{{mergeDmrFiles}}",
@@ -98,36 +97,75 @@
       "IsMergingJob": false,
       "IsSplittingJob": false,
       "IsStartJob": true,
+      "IsEndJob": false,
+      "IsCollectingArtifacts": false,
+      "IsCollectingJunitFiles": false,
+      "BranchName": "br_StandardsCheck_FC",
+      "DownloadBranchName": "br_StandardsCheck_FC",
+      "MergingSettings": []
+    },
+    "CodeGenerationTask_FC": {
+      "Name": "CodeGenerationTask_FC",
+      "Tasks": "CodeGenerationTask|sl_model_file|FC|Model/FC.slx",
+      "OutputsPaths": [
+        "Code",
+        "derived",
+        "$PROJECTROOT/PA_Results/Report"
+      ],
+      "JunitFiles": "PA_Results/junit/CodeGenerationTask_FC_JUnit.xml",
+      "PredecessorJobsNames": "StandardsCheck_FC",
+      "SuccessorJobsNames": [],
+      "Commands": [
+        "padv.util.initSessionDataDictionaryCache();",
+        "{{mergeDmrFiles}}",
+        "cp=openProject(pwd);",
+        "{{pruneProcessModel}}",
+        "{{runprocess}}",
+        "{{checkOutdatedResults}}",
+        "{{generate-report}}",
+        "cp.close();",
+        "padv.internal.util.poll(@()~cp.isLoaded, 'timeout', inf);",
+        "exit(exitCode);"
+      ],
+      "IsStartingNewBranch": false,
+      "IsMergingJob": false,
+      "IsSplittingJob": false,
+      "IsStartJob": false,
       "IsEndJob": true,
       "IsCollectingArtifacts": true,
       "IsCollectingJunitFiles": false,
-      "BranchName": "br_CodeGenerationTask_FC",
-      "DownloadBranchName": "br_CodeGenerationTask_FC",
+      "BranchName": "br_StandardsCheck_FC",
+      "DownloadBranchName": "",
       "MergingSettings": []
     }
   },
   "Branches": {
-    "br_CodeGenerationTask_FC": {
-      "Name": "br_CodeGenerationTask_FC",
+    "br_StandardsCheck_FC": {
+      "Name": "br_StandardsCheck_FC",
       "PredecessorBranchesNames": [],
       "AllPredecessorBranchesNames": [],
       "SuccessorBranchesNames": [],
       "OutputsPaths": [
-        "Code",
-        "derived"
+        "PA_Results/FC/model_standards_results",
+        "derived",
+        "Code"
       ],
-      "JobsNames": "CodeGenerationTask_FC",
+      "JobsNames": [
+        "StandardsCheck_FC",
+        "CodeGenerationTask_FC"
+      ],
       "Level": 0
     }
   },
   "Stages": {
     "Name": "Stage_1",
-    "BranchesNames": "br_CodeGenerationTask_FC",
+    "BranchesNames": "br_StandardsCheck_FC",
     "Level": 0,
     "HasParallelBranches": false
   },
   "OutputsPaths": [
     "Code",
+    "PA_Results/FC/model_standards_results",
     "derived",
     "$PROJECTROOT/PA_Results/Report"
   ]
