@@ -3,7 +3,7 @@
   "ProcessName": "CIPipeline",
   "FileName": "simulink_pipeline.yml",
   "IncrementalPipelineEnabled": true,
-  "StartJobName": "StandardsCheck_FC",
+  "StartJobName": "ModelTestingMetrics_FC",
   "EndJobName": "CodeGenerationTask_FC",
   "DerivedFolderPath": "derived",
   "ReportOutputPath": "$PROJECTROOT/PA_Results/Report",
@@ -18,28 +18,28 @@
     "CheckoutSubmodules": "false",
     "TemplatePath": "./.github/workflows/generic-job.yml",
     "RunprocessCommandOptions": {
+      "ExitInBatchMode": false,
+      "RefreshProcessModel": true,
+      "Force": false,
+      "DryRunLicenseCheckout": false,
+      "GenerateReport": false,
       "Clean": false,
-      "DryRun": false,
+      "ReportFormat": "pdf",
       "DeleteOutputs": false,
+      "RunWithoutSaving": false,
+      "RerunErroredTasks": false,
+      "DryRun": false,
+      "RerunFailedTasks": false,
       "Isolation": false,
+      "ReportPath": "ProcessAdvisorReport",
       "GenerateJUnitForProcess": false,
       "SuppressOutputWhenInteractive": [],
-      "RerunErroredTasks": false,
-      "MarkStale": false,
-      "RefreshProcessModel": true,
-      "DryRunLicenseCheckout": false,
       "DiscardDictionaryChanges": [],
-      "ExitInBatchMode": false,
-      "RerunFailedTasks": false,
-      "ReanalyzeProjectAnalysisIssues": true,
-      "MakeSureOutputArtifactsWriteable": false,
-      "EnableTaskLogging": true,
-      "ReportFormat": "pdf",
-      "Force": false,
       "EnableOpenTelemetry": false,
-      "RunWithoutSaving": false,
-      "GenerateReport": false,
-      "ReportPath": "ProcessAdvisorReport"
+      "EnableTaskLogging": true,
+      "ReanalyzeProjectAnalysisIssues": true,
+      "MarkStale": false,
+      "MakeSureOutputArtifactsWriteable": false
     },
     "PipelineArchitecture": "SerialStages",
     "MatlabLaunchCmd": "matlab",
@@ -71,16 +71,16 @@
     "CacheFallbackBranches": "main"
   },
   "Jobs": {
-    "StandardsCheck_FC": {
-      "Name": "StandardsCheck_FC",
-      "Tasks": "StandardsCheck|sl_model_file|FC|Model/FC.slx",
+    "ModelTestingMetrics_FC": {
+      "Name": "ModelTestingMetrics_FC",
+      "Tasks": "ModelTestingMetrics|sl_model_file|FC|Model/FC.slx",
       "OutputsPaths": [
-        "PA_Results/FC/model_standards_results",
+        "PA_Results/FC/metrics",
         "derived"
       ],
-      "JunitFiles": "PA_Results/junit/StandardsCheck_FC_JUnit.xml",
+      "JunitFiles": "PA_Results/junit/ModelTestingMetrics_FC_JUnit.xml",
       "PredecessorJobsNames": [],
-      "SuccessorJobsNames": "CodeGenerationTask_FC",
+      "SuccessorJobsNames": "StandardsCheck_FC",
       "Commands": [
         "padv.util.initSessionDataDictionaryCache();",
         "{{mergeDmrFiles}}",
@@ -100,8 +100,41 @@
       "IsEndJob": false,
       "IsCollectingArtifacts": false,
       "IsCollectingJunitFiles": false,
-      "BranchName": "br_StandardsCheck_FC",
-      "DownloadBranchName": "br_StandardsCheck_FC",
+      "BranchName": "br_ModelTestingMetrics_FC",
+      "DownloadBranchName": "br_ModelTestingMetrics_FC",
+      "MergingSettings": []
+    },
+    "StandardsCheck_FC": {
+      "Name": "StandardsCheck_FC",
+      "Tasks": "StandardsCheck|sl_model_file|FC|Model/FC.slx",
+      "OutputsPaths": [
+        "PA_Results/FC/model_standards_results",
+        "derived"
+      ],
+      "JunitFiles": "PA_Results/junit/StandardsCheck_FC_JUnit.xml",
+      "PredecessorJobsNames": "ModelTestingMetrics_FC",
+      "SuccessorJobsNames": "CodeGenerationTask_FC",
+      "Commands": [
+        "padv.util.initSessionDataDictionaryCache();",
+        "{{mergeDmrFiles}}",
+        "cp=openProject(pwd);",
+        "{{pruneProcessModel}}",
+        "{{runprocess}}",
+        "{{checkOutdatedResults}}",
+        "{{generate-report}}",
+        "cp.close();",
+        "padv.internal.util.poll(@()~cp.isLoaded, 'timeout', inf);",
+        "exit(exitCode);"
+      ],
+      "IsStartingNewBranch": false,
+      "IsMergingJob": false,
+      "IsSplittingJob": false,
+      "IsStartJob": false,
+      "IsEndJob": false,
+      "IsCollectingArtifacts": false,
+      "IsCollectingJunitFiles": false,
+      "BranchName": "br_ModelTestingMetrics_FC",
+      "DownloadBranchName": "",
       "MergingSettings": []
     },
     "CodeGenerationTask_FC": {
@@ -134,23 +167,25 @@
       "IsEndJob": true,
       "IsCollectingArtifacts": true,
       "IsCollectingJunitFiles": false,
-      "BranchName": "br_StandardsCheck_FC",
+      "BranchName": "br_ModelTestingMetrics_FC",
       "DownloadBranchName": "",
       "MergingSettings": []
     }
   },
   "Branches": {
-    "br_StandardsCheck_FC": {
-      "Name": "br_StandardsCheck_FC",
+    "br_ModelTestingMetrics_FC": {
+      "Name": "br_ModelTestingMetrics_FC",
       "PredecessorBranchesNames": [],
       "AllPredecessorBranchesNames": [],
       "SuccessorBranchesNames": [],
       "OutputsPaths": [
-        "PA_Results/FC/model_standards_results",
+        "PA_Results/FC/metrics",
         "derived",
+        "PA_Results/FC/model_standards_results",
         "Code"
       ],
       "JobsNames": [
+        "ModelTestingMetrics_FC",
         "StandardsCheck_FC",
         "CodeGenerationTask_FC"
       ],
@@ -159,12 +194,13 @@
   },
   "Stages": {
     "Name": "Stage_1",
-    "BranchesNames": "br_StandardsCheck_FC",
+    "BranchesNames": "br_ModelTestingMetrics_FC",
     "Level": 0,
     "HasParallelBranches": false
   },
   "OutputsPaths": [
     "Code",
+    "PA_Results/FC/metrics",
     "PA_Results/FC/model_standards_results",
     "derived",
     "$PROJECTROOT/PA_Results/Report"

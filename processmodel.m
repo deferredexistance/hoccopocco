@@ -10,7 +10,7 @@ function processmodel(pm)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     includeModelMaintainabilityMetricTask = false;
-    includeModelTestingMetricTask = false;
+    includeModelTestingMetricTask = true;
     includeModelStandardsTask = true;
     includeDesignErrorDetectionTask = false;
     includeFindClones = false;
